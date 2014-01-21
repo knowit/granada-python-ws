@@ -2,6 +2,6 @@
 Granada python workshop
 ======
 
-Ruter sine ruter.
+Bitcoin hft 
 
-Mappen data/ inneholder en del csver som beskriver ruteoppsettet til Ruter.
+Graf over fortjeneste dersom man hadde vært lur og kjøpt bitcoins for en stund siden
