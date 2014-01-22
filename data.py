@@ -1,54 +1,50 @@
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 import datetime
+import itertools
 from os import path
-
 
 Gold = namedtuple('Gold', ['date', 'usd', 'gbp', 'eur'])
 Aapl = namedtuple('Aapl', ['date', 'open', 'high', 'low', 'close', 'volume'])
 Bitcoin = namedtuple('Bitcoin', ['date', 'open', 'high', 'low', 'close',
                                  'volume_btc', 'volume_usd', 'weighted_price'])
-Datapoint = namedtuple('Datapoint', ['date', 'aapl', 'bitcoin', 'gold'])
+Datapoint = namedtuple('Datapoint', ['aapl', 'bitcoin', 'gold'])
 
 def to_datetime(date_str):
-    return datetime.datetime.strptime(date_str, "%Y-%m-%d")
+    return datetime.datetime(*[int(pt) for pt in date_str.split('-')])
 
-def transform_types(*args):
-    return [to_datetime(args[0])] + [float(arg) if arg else None for arg in args[1:]]
+def date_parser_for(tuple_type):
+    def init(line):
+        date, *values = line.split(',')
+        return tuple_type(to_datetime(date), *[float(arg) if arg.strip() else None for arg in values])
+    return init
+
+tuple_types = [Aapl, Bitcoin, Gold]
+aapl, bitcoin, gold = [date_parser_for(tp) for tp in tuple_types]
+
+def data_point(values):
+    def index_of(item):
+        return tuple_types.index(item.__class__)
+    return Datapoint(*list(sorted(values, key=index_of)))
 
 def open_data_file(name):
     return open(path.join('data', name), mode='r')
 
+def consume_header(data_file):
+    data_file.readline()
+
 def parse(name, record_type):
     with open_data_file(name) as data_file:
-        data_file.readline()
-        return [parse_record(record, record_type) for record in data_file]
+        consume_header(data_file)
+        return [record_type(record) for record in data_file]
 
-def parse_record(record, record_type):
-    return record_type(*transform_types(*[column.strip() if column.strip() != '' else None
-                                          for column in record.split(',')]))
+def datapoints(*data_sets):
+    date_mapping = defaultdict(list)
+    for point in itertools.chain(*data_sets):
+        date_mapping[point.date].append(point)
+    return {date: data_point(values) for date, values in date_mapping.items() if len(values) == 3}
 
-def dates_for_dataset(dataset):
-    return [el.date for el in dataset]
-
-def element_for_date(dataset, date):
-    for el in dataset:
-        if el.date == date:
-            return el
-
-def dates_with_complete_datapoints(*datasets):
-    dataset_dates = [dates_for_dataset(dataset) for dataset in datasets]
-    all_dates = set(sum(dataset_dates, []))
-    return [date for date in all_dates if all([date in dates for dates in dataset_dates])]
-
-def datapoints(aapl, bitcoin, gold):
-    return [Datapoint(date, element_for_date(aapl, date),
-                      element_for_date(bitcoin, date),
-                      element_for_date(gold, date))
-            for date in dates_with_complete_datapoints(aapl, bitcoin, gold)]
+def fetch_data():
+    return datapoints(parse('NASDAQ_AAPL.csv', aapl), parse('MTGOXUSD.csv', bitcoin), parse('GOLD_2.csv', gold))
 
 if __name__ == '__main__':
-    aapl = parse('NASDAQ_AAPL.csv', Aapl)
-    bitcoin = parse('MTGOXUSD.csv', Bitcoin)
-    gold = parse('GOLD_2.csv', Gold)
-    datas = datapoints(aapl, bitcoin, gold)
-    print 'Found {} datapoints'.format(len(datas))
+    fetch_data()
