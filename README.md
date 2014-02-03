@@ -7,9 +7,9 @@
 ## Avhengigheter
 Koden er skrevet for python3.
 
-NB! på OS X måtte jeg installere freetype før matplotlib ville bygge:
+NB! på OS X måtte jeg installere freetype og libagg før matplotlib ville bygge:
 
-    brew install freetype
+    brew install freetype libagg
 
 Installer avhengigheter:
 
