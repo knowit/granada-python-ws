@@ -41,7 +41,7 @@ def datapoints(*data_sets):
     date_mapping = defaultdict(list)
     for point in itertools.chain(*data_sets):
         date_mapping[point.date].append(point)
-    return {date: data_point(values) for date, values in date_mapping.items() if len(values) == 3}
+    return {date: data_point(values) for date, values in date_mapping.items() if len(values) == len(data_sets)}
 
 def fetch_data():
     return datapoints(parse('NASDAQ_AAPL.csv', aapl), parse('MTGOXUSD.csv', bitcoin), parse('GOLD_2.csv', gold))
