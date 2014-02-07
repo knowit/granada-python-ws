@@ -1,5 +1,6 @@
-from collections import namedtuple, defaultdict
+from collections import namedtuple, defaultdict, OrderedDict
 import datetime
+import operator
 import itertools
 from os import path
 
@@ -37,14 +38,34 @@ def parse(name, record_type):
         consume_header(data_file)
         return [record_type(record) for record in data_file]
 
-def datapoints(*data_sets):
+def group_data_by_date(data_sets):
     date_mapping = defaultdict(list)
     for point in itertools.chain(*data_sets):
         date_mapping[point.date].append(point)
-    return {date: data_point(values) for date, values in date_mapping.items() if len(values) == len(data_sets)}
+    return date_mapping
+
+def remove_incomplete_data_points(data_by_date):
+    complete_data_point = max(len(values) for _, values in data_by_date.items())
+    return {key: values for key, values in data_by_date.items()
+            if len(values) == complete_data_point}
+
+def order_dictionary_by_date(date_mapping):
+    return OrderedDict([(date, values)
+                        for date, values in sorted(date_mapping.items())])
+
+def create_data_points_in_date_mapping(date_mapping):
+    for date, values in date_mapping.items():
+        date_mapping[date] = data_point(values)
+    return date_mapping
+
+def datapoints(data_sets):
+    grouped = group_data_by_date(data_sets)
+    filtered = remove_incomplete_data_points(grouped)
+    ordered_by_date = order_dictionary_by_date(filtered)
+    return create_data_points_in_date_mapping(ordered_by_date)
 
 def fetch_data():
-    return datapoints(parse('NASDAQ_AAPL.csv', aapl), parse('MTGOXUSD.csv', bitcoin), parse('GOLD_2.csv', gold))
+    return datapoints([parse('NASDAQ_AAPL.csv', aapl), parse('MTGOXUSD.csv', bitcoin), parse('GOLD_2.csv', gold)])
 
 if __name__ == '__main__':
     fetch_data()

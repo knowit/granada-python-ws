@@ -1,3 +1,4 @@
+from collections import namedtuple, defaultdict, OrderedDict
 import data
 import datetime
 import string
@@ -63,6 +64,38 @@ def test_to_datetime():
     assert date.month == 1
     assert date.day == 31
 
+data_sets = [[data.Gold(1, 0, 0, 0), data.Gold(8, 0, 0, 0), data.Gold(3, 0, 0, 0), data.Gold(-17, 0, 0, 0)],
+             [data.Aapl(1, 0, 0, 0, 0, 0)],
+             [data.Bitcoin(1, 1, 2, 3, 4, 5, 6, 7)]]
+
+def test_group_data_by_date_should_yield_defaultdict(): # hint
+    assert isinstance(data.group_data_by_date(data_sets), defaultdict)
+    assert data.group_data_by_date(data_sets).default_factory == list
+
+def test_group_data_behaves():
+    groups = data.group_data_by_date(data_sets)
+    assert len(groups) == 4
+    assert len(groups[1]) == 3
+    assert len(groups[8]) == 1
+    group_for_1 = [data_sets[0][0], data_sets[1][0], data_sets[2][0]]
+    assert groups[1] == group_for_1
+
+def test_remove_incomplete_data_points():
+    groups = data.group_data_by_date(data_sets)
+    filtered = data.remove_incomplete_data_points(groups)
+    assert len(filtered) == 1
+    group_for_1 = [data_sets[0][0], data_sets[1][0], data_sets[2][0]]
+    assert filtered[1] == group_for_1
+
+def test_order_dictionary_by_dates_yields_ordered_dict():
+    assert isinstance(data.order_dictionary_by_date({}), OrderedDict)
+
+def test_order_dictionary_by_dates_behaves_nicely():
+    groups = data.group_data_by_date(data_sets)
+    ordered_dict = data.order_dictionary_by_date(groups)
+    keys = list(ordered_dict.keys())
+    assert keys == list(sorted(keys))
+
 def test_fetches_correct_amount_of_data():
     assert len(data.fetch_data()) == 853
 
@@ -76,3 +109,9 @@ def test_data_point_smart_constructor_is_smart():
     assert data_point.gold == gold
     assert data_point.aapl == aapl
     assert data_point.bitcoin == bitcoin
+
+def test_fetches_datapoints_in_correct_order():
+    points = data.fetch_data()
+    assert isinstance(points, OrderedDict)
+    keys = list(points.keys())
+    assert keys == list(sorted(keys))
