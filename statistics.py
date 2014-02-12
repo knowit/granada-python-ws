@@ -2,9 +2,9 @@ import io
 import matplotlib.pyplot as plt
 import data
 
-def plot(*args):
+def plot(args):
     fig, ax = plt.subplots(1)
-    ax.plot(*args)#, s=5, linewidth=0)
+    ax.plot(*args)
     fig.autofmt_xdate()
     return fig
 
@@ -14,9 +14,15 @@ def plot_to_png_IO(fig):
     png_bytes.seek(0)
     return png_bytes
 
-DATAPOINTS = data.fetch_data()
+def partition(datapoints):
+    """
+    returns: (list av datetime, list av aapl, list av bitcoin, list av gold)
+    """
+    dates = list(datapoints.keys())
+    aapls = [datapoint.aapl for datapoint in datapoints.values()]
+    bitcoins = [datapoint.bitcoin for datapoint in datapoints.values()]
+    golds = [datapoint.gold for datapoint in datapoints.values()]
+    return dates, aapls, bitcoins, golds
 
-def gold_price():
-    dates = list(sorted(DATAPOINTS.keys()))
-    gold_prices = [DATAPOINTS[date].gold.usd for date in dates]
-    return plot(dates, gold_prices)
+def plot_partition(datapoints):
+    return plot(partition(datapoints)[0:2])
