@@ -2,9 +2,17 @@ import io
 import matplotlib.pyplot as plt
 import data
 
-def plot(args):
+one_troy_ounce_in_grams = 31.1034768
+
+def plot(points):
+    """
+    point = (x, y, y1, y2, ... yn)
+    """
     fig, ax = plt.subplots(1)
-    ax.plot(*args)
+    formatted = list(zip(*points))
+    xs = formatted[0]
+    for ys in formatted[1:]:
+        ax.plot(xs, ys)
     fig.autofmt_xdate()
     return fig
 
@@ -14,15 +22,17 @@ def plot_to_png_IO(fig):
     png_bytes.seek(0)
     return png_bytes
 
-def partition(datapoints):
+def aapl_in_gold(datapoints):
     """
-    returns: (list av datetime, list av aapl, list av bitcoin, list av gold)
+    return: [(date, aapl_price_in_gold), ...]
     """
-    dates = list(datapoints.keys())
-    aapls = [datapoint.aapl for datapoint in datapoints.values()]
-    bitcoins = [datapoint.bitcoin for datapoint in datapoints.values()]
-    golds = [datapoint.gold for datapoint in datapoints.values()]
-    return dates, aapls, bitcoins, golds
+    def aapl_stock_in_grams_of_gold(datapoint):
+        return datapoint.aapl.close / datapoint.gold.usd  * one_troy_ounce_in_grams
+    return [(date, aapl_stock_in_grams_of_gold(datapoint)) for date, datapoint in datapoints.items()]
 
-def plot_partition(datapoints):
-    return plot(partition(datapoints)[0:2])
+def all_as_usd(datapoints):
+    return [(date, datapoint.aapl.close, datapoint.bitcoin.close, datapoint.gold.usd)
+            for date, datapoint in datapoints.items()]
+
+def aapl_in_bitcoin(datapoints):
+    return [(date, datapoint.bitcoin.close / datapoint.aapl.close ) for date, datapoint in datapoints.items()]

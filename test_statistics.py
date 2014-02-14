@@ -1,6 +1,6 @@
 from collections import OrderedDict
 import datetime
-
+import mock
 from data import Datapoint, Aapl, Bitcoin, Gold
 import statistics
 
@@ -13,17 +13,30 @@ datapoints = OrderedDict([
     (day2, Datapoint(Aapl(day2, 1, 2, 3, 4, 5), Bitcoin(day2, 1, 2, 3, 4, 5, 6, 7), Gold(day2, 1, 2, 3))),
 ])
 
-def test_that_partition_returns_sorted_datapoints():
-    partitioned = statistics.partition(datapoints)
-    assert len(partitioned) == 4
+def test_that_aapl_in_gold_returns_expected_structure():
+    ounces_per_share = statistics.aapl_in_gold(datapoints)
+    assert ounces_per_share
+    first_day = ounces_per_share[0]
+    expected = datapoints[day0].aapl.close / float(datapoints[day0].gold.usd) * statistics.one_troy_ounce_in_grams
+    assert first_day[0] == day0
+    assert first_day[1] == expected
 
-    dates, aapls, bitcoins, golds = partitioned
-    assert sorted(dates) == dates
+def test_that_all_as_usd_returns_4_items():
+    all_as_usd = statistics.all_as_usd(datapoints)
+    assert len(all_as_usd) == 3
+    assert len(all_as_usd[0]) == 4
+    first_day = all_as_usd[0]
+    assert first_day[0] == day0
+    assert first_day[1] == datapoints[day0].aapl.close
+    assert first_day[2] == datapoints[day0].bitcoin.close
+    assert first_day[3] == datapoints[day0].gold.usd
 
-    for part in partitioned:
-        assert len(part) == 3
-
-    assert dates[0] == day0
-    assert aapls[0] == datapoints[day0].aapl
-    assert bitcoins[0] == datapoints[day0].bitcoin
-    assert golds[0] == datapoints[day0].gold
+def test_that_plot_separates_points_correctly():
+    fig_mock, ax_mock = mock.Mock(), mock.Mock()
+    with mock.patch('statistics.plt.subplots', return_value=(fig_mock, ax_mock)):
+        fig = statistics.plot([[1, 2, 3], [2, 1, 2]])
+        xs = [1, 2]
+        y1s = [2, 3]
+        y2s = [3, 2]
+        ax_mock.plot.mock_calls == [mock.call(xs, y1s), mock.call(xs, y2s)]
+        assert fig is fig_mock

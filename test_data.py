@@ -97,7 +97,7 @@ def test_order_dictionary_by_dates_behaves_nicely():
     assert keys == list(sorted(keys))
 
 def test_fetches_correct_amount_of_data():
-    assert len(data.fetch_data()) == 853
+    assert len(data.fetch_data()) == 848
 
 def test_data_point_smart_constructor_is_smart():
     gold = data.Gold(*range(4))
