@@ -100,7 +100,7 @@ def parse(name, data_parser):
     """
     with open_data_file(name) as data_file:
         consume_header(data_file)
-        return [data_parser(csv_line) for csv_line in data_file]
+        return [data_parser(csv_line.strip()) for csv_line in data_file if csv_line.strip()]
 
 def group_data_by_date(data_sets):
     """

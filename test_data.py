@@ -1,6 +1,8 @@
 from collections import defaultdict, OrderedDict
 import data
 import datetime
+import mock
+import io
 
 def test_open_MTGOXUSD():
     with data.open_data_file('MTGOXUSD.csv'):
@@ -114,3 +116,31 @@ def test_fetches_datapoints_in_correct_order():
     assert isinstance(points, OrderedDict)
     keys = list(points.keys())
     assert keys == list(sorted(keys))
+
+def test_data_parser_for():
+    csv_line = '2399-07-12,7,1597,13,229, ,,4.7'
+    thing = data.data_parser_for(lambda *args: tuple(args), csv_line)
+    assert thing == (datetime.date(2399, 7, 12), 7.0, 1597.0, 13.0, 229.0, None, None, 4.7)
+
+def test_class_name_of():
+    assert data.class_name_of(('tuppel',)) == 'tuple'
+    assert data.class_name_of(data_sets[0][0]) == 'Gold'
+
+def test_parse():
+    not_a_file = mock.Mock()
+    csv = """Date, Prime, Prime, Prime, Prime, Nothing, Nothing, FourPointSeven
+2399-07-12,7,1597,13,229, ,,4.7
+    """
+    stream = io.StringIO(csv)
+    with mock.patch('data.open_data_file', return_value=stream) as open_data_file:
+        data_set = data.parse('A StringIO', lambda args: args)
+
+        open_data_file.assert_called_with('A StringIO')
+        assert data_set == ['2399-07-12,7,1597,13,229, ,,4.7']
+
+def test_open_data_file():
+    sentinel = object()
+    with mock.patch('builtins.open', return_value=sentinel) as mock_open:
+        assert data.open_data_file('file name') is sentinel
+        mock_open.assert_called_with('data/file name', mode='r')
+
