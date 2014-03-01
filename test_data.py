@@ -1,7 +1,6 @@
-from collections import namedtuple, defaultdict, OrderedDict
+from collections import defaultdict, OrderedDict
 import data
 import datetime
-import string
 
 def test_open_MTGOXUSD():
     with data.open_data_file('MTGOXUSD.csv'):
@@ -24,7 +23,7 @@ def test_parse_GOLD_2_yields_list_of_Gold():
     for gold in golds:
         assert isinstance(gold, data.Gold)
         for column in gold:
-            assert_is_type_or_None(gold.date, datetime.datetime)
+            assert_is_type_or_None(gold.date, datetime.date)
             assert_is_type_or_None(gold.usd, float)
             assert_is_type_or_None(gold.gbp, float)
             assert_is_type_or_None(gold.eur, float)
@@ -35,7 +34,7 @@ def test_parse_NASDAQ_AAPL_yields_list_of_Aapl():
     for aapl in aapls:
         assert isinstance(aapl, data.Aapl)
         for column in aapl:
-            assert_is_type_or_None(aapl.date, datetime.datetime)
+            assert_is_type_or_None(aapl.date, datetime.date)
             assert_is_type_or_None(aapl.open, float)
             assert_is_type_or_None(aapl.high, float)
             assert_is_type_or_None(aapl.low, float)
@@ -48,7 +47,7 @@ def test_parse_MTGOXUSD_yields_list_of_Bitcoin():
     for bitcoin in bitcoins:
         assert isinstance(bitcoin, data.Bitcoin)
         for column in bitcoin:
-            assert_is_type_or_None(bitcoin.date, datetime.datetime)
+            assert_is_type_or_None(bitcoin.date, datetime.date)
             assert_is_type_or_None(bitcoin.open, float)
             assert_is_type_or_None(bitcoin.high, float)
             assert_is_type_or_None(bitcoin.low, float)
@@ -58,8 +57,8 @@ def test_parse_MTGOXUSD_yields_list_of_Bitcoin():
             assert_is_type_or_None(bitcoin.weighted_price, float)
 
 def test_to_datetime():
-    date = data.to_datetime('2014-01-31')
-    assert isinstance(date, datetime.datetime)
+    date = data.to_date('2014-01-31')
+    assert isinstance(date, datetime.date)
     assert date.year == 2014
     assert date.month == 1
     assert date.day == 31
