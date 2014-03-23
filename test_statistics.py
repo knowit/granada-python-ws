@@ -1,6 +1,5 @@
 from collections import OrderedDict
 import datetime
-import mock
 from data import Datapoint, Aapl, Bitcoin, Gold
 import statistics
 
@@ -31,12 +30,3 @@ def test_that_all_as_usd_returns_4_items():
     assert first_day[2] == datapoints[day0].bitcoin.close
     assert first_day[3] == datapoints[day0].gold.usd
 
-def test_that_plot_separates_points_correctly():
-    fig_mock, ax_mock = mock.Mock(), mock.Mock()
-    with mock.patch('statistics.plt.subplots', return_value=(fig_mock, ax_mock)):
-        fig = statistics.plot([[1, 2, 3], [2, 1, 2]])
-        xs = [1, 2]
-        y1s = [2, 3]
-        y2s = [3, 2]
-        ax_mock.plot.mock_calls == [mock.call(xs, y1s), mock.call(xs, y2s)]
-        assert fig is fig_mock
