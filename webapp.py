@@ -37,6 +37,10 @@ def aapl_in_bitcoin():
     """
     return send_png_plot(simpleplot.plot(statistics.aapl_in_bitcoin(datapoints)))
 
+@app.route("/test")
+def test():
+    return send_png_plot(simpleplot.plot([(1,2), (2, 3), (4, 5)]))
+
 def send_png_plot(plot):
     """
     Renders a matplotlib Figure object into a png and streams it over HTTP with the correct MIME type
