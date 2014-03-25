@@ -1,3 +1,4 @@
+# coding: utf-8
 from collections import OrderedDict
 import datetime
 from data import Datapoint, Aapl, Bitcoin, Gold

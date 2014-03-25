@@ -1,3 +1,4 @@
+# coding: utf-8
 from flask import Flask, send_file
 import statistics
 import data
