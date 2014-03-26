@@ -48,7 +48,7 @@ I starten av modulen er det dokumentert hva slags strukturer og konsepter man jo
 
 Koden som er gitt er et skjelett som mangler implementasjoner og noen datatype-definisjoner som
 gjenbrukes i andre moduler. namedtuples er verdityper som er immutable og har 'dumme' konstruktører,
-første del av oppgaven er å skrive smarte konstruktører som ta initialisere datatypene fra
+første del av oppgaven er å skrive smarte konstruktører som kan initialisere datatypene fra
 csv-records (en linje plaintext).
 
 Andre hoveddel av denne modulen er å hente ut datapunkter fra datafilene. Dette deles opp i
@@ -67,7 +67,7 @@ Resultatplottet her vil inneholde n linjer.
 ### simpleplot.py - plotting med matplotlib (ferdig)
 
 Denne modulen er ferdig implementert. Den implementerer en plot()-funksjon som kan benyttes
-for å lage matplotlib-plots av lister av (x, y0, y1, yn)-tuppler og den kan lage PNG-filer
+for å lage matplotlib-plots av lister av (x, y0, y1, yn)-tupler og den kan lage PNG-filer
 som kan hostes med HTTP.
 
 ### webapp.py - minimalist webapp som viser plots
@@ -81,3 +81,4 @@ $ python webapp.py
 
 Du kan gå til http://localhost:5000 i nettleseren for å se på webappen. Dersom noe feiler
 vil denne sette deg i en interaktiv debugger for webappen.
+
