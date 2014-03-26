@@ -120,8 +120,7 @@ def order_dictionary_by_date(data_by_date):
 
     Returns an collections.OrderedDict of data_by_date, sorted by date
     """
-    return OrderedDict([(date, values)
-                        for date, values in sorted(data_by_date.items())])
+    pass
 
 def create_data_points_in_date_mapping(data_by_date):
     """
