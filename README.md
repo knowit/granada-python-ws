@@ -28,15 +28,15 @@ Oppgavene består i å implementere skjelettene til funksjonene som er oppgitt i
 For hver fil finnes det også en test_$fil som inneholder enhetstester som kan hjelpe å sjekke
 om oppgaven er løst. Disse testene kan kjøres med py.test-kommandoen -- enten alle i prosjektet:
 
-$ py.test
+    $ py.test
 
 Eller en spesifikk test-modul:
 
-$ py.test test_data.py
+    $ py.test test_data.py
 
 Eller en spesifikk testcase:
 
-$ py.test -k test_group_data_by_date_should_yield_defaultdict
+    $ py.test -k test_group_data_by_date_should_yield_defaultdict
 
 ### data.py - Hente ut strukturert data fra CSV-filer
 
@@ -77,7 +77,7 @@ men all web-koden er implementert allerede. Her bindes modulene sammen ved at ma
 png-plots av dataen man har regnet ut i statistics.py. Ved å kjøre modulen som et python-script
 vil man få opp en lokal applikasjon som kan brukes for å se på resultatet:
 
-$ python webapp.py
+    $ python webapp.py
 
 Du kan gå til http://localhost:5000 i nettleseren for å se på webappen. Dersom noe feiler
 vil denne sette deg i en interaktiv debugger for webappen.
