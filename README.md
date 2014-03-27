@@ -28,15 +28,15 @@ Oppgavene består i å implementere skjelettene til funksjonene som er oppgitt i
 For hver fil finnes det også en test_$fil som inneholder enhetstester som kan hjelpe å sjekke
 om oppgaven er løst. Disse testene kan kjøres med py.test-kommandoen -- enten alle i prosjektet:
 
-$ py.test
+    $ py.test
 
 Eller en spesifikk test-modul:
 
-$ py.test test_data.py
+    $ py.test test_data.py
 
 Eller en spesifikk testcase:
 
-$ py.test -k test_group_data_by_date_should_yield_defaultdict
+    $ py.test -k test_group_data_by_date_should_yield_defaultdict
 
 ### data.py - Hente ut strukturert data fra CSV-filer
 
@@ -48,7 +48,7 @@ I starten av modulen er det dokumentert hva slags strukturer og konsepter man jo
 
 Koden som er gitt er et skjelett som mangler implementasjoner og noen datatype-definisjoner som
 gjenbrukes i andre moduler. namedtuples er verdityper som er immutable og har 'dumme' konstruktører,
-første del av oppgaven er å skrive smarte konstruktører som ta initialisere datatypene fra
+første del av oppgaven er å skrive smarte konstruktører som kan initialisere datatypene fra
 csv-records (en linje plaintext).
 
 Andre hoveddel av denne modulen er å hente ut datapunkter fra datafilene. Dette deles opp i
@@ -67,7 +67,7 @@ Resultatplottet her vil inneholde n linjer.
 ### simpleplot.py - plotting med matplotlib (ferdig)
 
 Denne modulen er ferdig implementert. Den implementerer en plot()-funksjon som kan benyttes
-for å lage matplotlib-plots av lister av (x, y0, y1, yn)-tuppler og den kan lage PNG-filer
+for å lage matplotlib-plots av lister av (x, y0, y1, yn)-tupler og den kan lage PNG-filer
 som kan hostes med HTTP.
 
 ### webapp.py - minimalist webapp som viser plots
@@ -77,7 +77,8 @@ men all web-koden er implementert allerede. Her bindes modulene sammen ved at ma
 png-plots av dataen man har regnet ut i statistics.py. Ved å kjøre modulen som et python-script
 vil man få opp en lokal applikasjon som kan brukes for å se på resultatet:
 
-$ python webapp.py
+    $ python webapp.py
 
 Du kan gå til http://localhost:5000 i nettleseren for å se på webappen. Dersom noe feiler
 vil denne sette deg i en interaktiv debugger for webappen.
+
